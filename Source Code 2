@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+
+char** pisahkanString(char*); // Deklarasi fungsi ubahKeInteger yang mengembalikan nilai integer dan menerima parameter string sebagai input. Namun,fungsi ini tidak diimplementasikan dalam kode yang diberikan
+int ubahKeInteger(char*); // Deklarasi fungsi ubahKeInteger yang mengembalikan nilai integer dan menerima parameter string sebagai input.
+int duaTumpukan(int, int, int*, int, int*); //  Deklarasi fungsi duaTumpukan yang mengembalikan nilai integer dan menerima beberapa parameter, yaitu nilai maksimum, jumlah elemen tumpukan A, array tumpukan A, jumlah elemen tumpukan B, dan array tumpukan B
+
+int main() // Fungsi utama program yang akan di jalankan
+{
+    int g; // Deklarasi variabel g dengan tipe data integer
+    scanf("%d", &g); // Untuk mengambil input integer dari pengguna dan menyimpannya di variabel g
+
+    for (int g_itr = 0; g_itr < g; g_itr++) { // Melakukan iterasi sebanyak nilai g dan menggunakan variabel g_itr sebagai penghitung iterasi
+        int n, m, maxSum; // Deklarasi variabel untuk menyimpan input jumlah elemen A, B, dan nilai maksimum yang diizinkan
+        scanf("%d %d %d", &n, &m, &maxSum); // Untuk mengambil input integer dari pengguna dan menyimpannya di variabel n,m,dan maxSum
+
+        int* a = malloc(n * sizeof(int)); //  Mengalokasikan memori dinamis untuk array a dengan ukuran n * sizeof(int)
+        for (int i = 0; i < n; i++) { 
+            scanf("%d", &a[i]); // Menggunakan scanf untuk mengambil input integer sebanyak n kali dan menyimpannya di dalam array a
+        }
+
+        int* b = malloc(m * sizeof(int)); // Mengalokasikan memori dinamis untuk array b dengan ukuran m * sizeof(int)
+        for (int i = 0; i < m; i++) {
+            scanf("%d", &b[i]); // Menggunakan scanf untuk mengambil input integer sebanyak m kali dan menyimpannya di dalam array b
+        }
+
+        int result = duaTumpukan(maxSum, n, a, m, b); // Memanggil fungsi duaTumpukan dengan argumen nilai maksimum, jumlah elemen tumpukan
+
+        printf("%d\n", result); // Mencetak hasil dari fungsi duaTumpukan
+
+        free(a); // Membebaskan memori yang dialokasikan untuk array a
+        free(b); // Membebaskan memori yang dialokasikan untuk array b
+    }
+
+    return 0; // Mengembalikan nilai 0 untuk menunjukkan bahwa program berakhir
+}
+int duaTumpukan(int maxSum, int a_jumlah, int* a, int b_jumlah, int* b) {
+    // eklarasi fungsi duaTumpukan yang mengambil beberapa parameter maxSum  (nilai maksimum yang diizinkan), a_jumlah (jumlah elemen dalam tumpukan A), a (array tumpukan A), b_jumlah (jumlah elemen dalam tumpukan B), dan b (array tumpukan B). Fungsi ini mengembalikan nilai integer
+    int jumlah = 0; // Deklarasi variabel lokal jumlah yang akan digunakan untuk menghitung jumlah elemen 
+    int jumlahSementara = 0; // Deklarasi variabel lokal jumlahSementara yang akan digunakan untuk menyimpan total nilai elemen yang dipilih saat ini dari kedua tumpukan
+    int idx_a = 0, idx_b = 0; // Deklarasi variabel lokal idx_a dan idx_b yang akan digunakan sebagai indeks untuk mengakses elemen-elemen dari tumpukan A dan B.
+
+    while (idx_a < a_jumlah && jumlahSementara + a[idx_a] <= maxSum) { // Memulai loop while yang akan berjalan selama indeks idx_a masih dalam rentang jumlah elemen tumpukan A dan jumlahSementara ditambah dengan nilai elemen tumpukan A pada indeks idx_a masih kurang dari atau sama dengan maxSum
+        jumlahSementara += a[idx_a]; // Menambahkan nilai elemen tumpukan A pada indeks idx_a ke dalam jumlahSementara
+        idx_a++; // Menaikkan nilai indeks idx_a untuk memeriksa elemen selanjutnya dari tumpukan A
+        jumlah++; // Menaikkan nilai jumlah untuk menghitung jumlah elemen yang telah dipilih dari kedua tumpukan
+    }
+
+    int maksJumlahElemen = jumlah; // Menginisialisasi variabel maksJumlahElemen dengan nilai jumlah. Variabel ini akan digunakan untuk menyimpan jumlah maksimum elemen
+
+    while (idx_b < b_jumlah && idx_a >= 0) { // Memulai loop while kedua yang akan berjalan selama indeks idx_b masih dalam rentang jumlah elemen tumpukan B dan indeks idx_a tidak kurang dari 0
+        jumlahSementara += b[idx_b]; // Menambahkan nilai elemen tumpukan B pada indeks idx_b ke dalam jumlahSementara
+        idx_b++; // Menaikkan nilai indeks idx_b untuk memeriksa elemen selanjutnya dari tumpukan B
+        jumlah++; // Menaikkan nilai jumlah untuk menghitung jumlah elemen yang telah dipilih dari kedua tumpukan
+
+        while (jumlahSementara > maxSum && idx_a > 0) { // Memulai loop while bersarang yang akan berjalan selama jumlahSementara lebih besar dari maxSum dan indeks idx_a masih lebih dari 0
+            idx_a--; // Mengurangi nilai indeks idx_a untuk memeriksa elemen sebelumnya dari tumpukan A
+            jumlahSementara -= a[idx_a]; // Mengurangi nilai elemen tumpukan A pada indeks idx_a dari jumlahSementara
+            jumlah--; // Mengurangi nilai jumlah untuk mencerminkan pengurangan satu elemen dari tumpukan A
+        }
+
+        if (jumlahSementara <= maxSum && jumlah > maksJumlahElemen) { // Memeriksa apakah jumlahSementara kurang dari atau sama dengan maxSum dan jumlah lebih besar dari maksJumlahElemen
+            maksJumlahElemen = jumlah; // ika kondisi di atas terpenuhi, maka variabel maksJumlahElemen akan diperbarui dengan nilai jumlah
+        }
+    }
+
+    return maksJumlahElemen; // Mengembalikan nilai maksJumlahElemen sebagai hasil dari fungsi duaTumpukan
+}
